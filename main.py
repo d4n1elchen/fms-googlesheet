@@ -1,4 +1,5 @@
 import argparse
+import datetime
 
 import gspread
 from fmslist import FindMeStoreList
@@ -47,6 +48,7 @@ def main():
         "Price",
         "Available",
         "Quantity",
+        datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
     ]
     wks.update([headers], "A1")
     wks.format("1:1", {"textFormat": {"bold": True}})
