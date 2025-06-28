@@ -50,26 +50,27 @@ def main():
         "Quantity",
         datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
     ]
-    wks.update([headers], "A1")
-    wks.format("1:1", {"textFormat": {"bold": True}})
-
-    itemrows = [
+    rows = [headers]
+    rows.extend(
         [
-            variant.id,
-            item.title,
-            item.product_type,
-            item.vendor,
-            item.link,
-            item.published_at.strftime("%Y-%m-%d %H:%M:%S"),
-            variant.name if variant.name else "-",
-            variant.price,
-            variant.available,
-            variant.quantity,
+            [
+                variant.id,
+                item.title,
+                item.product_type,
+                item.vendor,
+                item.link,
+                item.published_at.strftime("%Y-%m-%d %H:%M:%S"),
+                variant.name if variant.name else "-",
+                variant.price,
+                variant.available,
+                variant.quantity,
+            ]
+            for item in fms.items
+            for variant in item.variants
         ]
-        for item in fms.items
-        for variant in item.variants
-    ]
-    wks.update(itemrows, "A2")
+    )
+    wks.update(rows, "A1")
+    wks.format("1:1", {"textFormat": {"bold": True}})
 
 
 if __name__ == "__main__":
