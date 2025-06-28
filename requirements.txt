@@ -1,0 +1,2 @@
+fmslist==0.0.3
+gspread==6.2.1
