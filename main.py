@@ -29,12 +29,12 @@ def main():
         credentials_filename=args.credentials, authorized_user_filename=args.token
     )
 
-    wks = gc.open_by_key(args.sheet_id).sheet1
-    wks.clear()
-
     fms = FindMeStoreList()
     fms.fetch_items()
     fms.fill_quantities()
+
+    wks = gc.open_by_key(args.sheet_id).sheet1
+    wks.clear()
 
     # Update a range of cells using the top left corner address
     headers = [
