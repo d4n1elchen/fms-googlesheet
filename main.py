@@ -39,6 +39,7 @@ def main():
     headers = [
         "ID",
         "Title",
+        "Product Type",
         "Vendor",
         "Link",
         "Published At",
@@ -54,6 +55,7 @@ def main():
         [
             variant.id,
             item.title,
+            item.product_type,
             item.vendor,
             item.link,
             item.published_at.strftime("%Y-%m-%d %H:%M:%S"),
