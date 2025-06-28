@@ -1,2 +1,2 @@
-fmslist==0.0.3
+fmslist==0.0.4
 gspread==6.2.1
