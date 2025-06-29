@@ -1,8 +1,9 @@
 import argparse
 import datetime
+from typing import Any
 
 import gspread
-from fmslist import FindMeStoreList
+from fmslist import FindMeStoreItemList
 
 parser = argparse.ArgumentParser(description="A simple example script.")
 parser.add_argument(
@@ -29,9 +30,7 @@ def main():
         credentials_filename=args.credentials, authorized_user_filename=args.token
     )
 
-    fms = FindMeStoreList()
-    fms.fetch_items()
-    fms.fill_quantities()
+    fms = FindMeStoreItemList()
 
     wks = gc.open_by_key(args.sheet_id).sheet1
     wks.clear()
@@ -48,9 +47,11 @@ def main():
         "Price",
         "Available",
         "Quantity",
+        "Preorder Start",
+        "Preorder End",
         datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
     ]
-    rows = [headers]
+    rows: list[list[Any]] = [headers]
     rows.extend(
         [
             [
@@ -64,8 +65,18 @@ def main():
                 variant.price,
                 variant.available,
                 variant.quantity,
+                (
+                    item.preorder_period.start_time.strftime("%Y-%m-%d %H:%M")
+                    if item.preorder_period
+                    else None
+                ),
+                (
+                    item.preorder_period.end_time.strftime("%Y-%m-%d %H:%M")
+                    if item.preorder_period
+                    else None
+                ),
             ]
-            for item in fms.items
+            for item in fms.get_items(fill_preorder_period=True)
             for variant in item.variants
         ]
     )
