@@ -3,6 +3,7 @@ import datetime
 from typing import Any
 
 import gspread
+import pytz
 from fmslist import FindMeStoreItemList
 
 parser = argparse.ArgumentParser(description="A simple example script.")
@@ -31,6 +32,7 @@ def main():
     )
 
     fms = FindMeStoreItemList()
+    items = fms.get_items(fill_preorder_period=True)
 
     wks = gc.open_by_key(args.sheet_id).sheet1
     wks.clear()
@@ -49,7 +51,7 @@ def main():
         "Quantity",
         "Preorder Start",
         "Preorder End",
-        datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+        datetime.datetime.now(pytz.utc).strftime("%Y-%m-%d %H:%M:%S%z"),
     ]
     rows: list[list[Any]] = [headers]
     rows.extend(
@@ -60,23 +62,23 @@ def main():
                 item.product_type,
                 item.vendor,
                 item.link,
-                item.published_at.strftime("%Y-%m-%d %H:%M:%S"),
+                item.published_at.strftime("%Y-%m-%d %H:%M:%S%z"),
                 variant.name if variant.name else "-",
                 variant.price,
                 variant.available,
                 variant.quantity,
                 (
-                    item.preorder_period.start_time.strftime("%Y-%m-%d %H:%M")
+                    item.preorder_period.start_time.strftime("%Y-%m-%d %H:%M%z")
                     if item.preorder_period
                     else None
                 ),
                 (
-                    item.preorder_period.end_time.strftime("%Y-%m-%d %H:%M")
+                    item.preorder_period.end_time.strftime("%Y-%m-%d %H:%M%z")
                     if item.preorder_period
                     else None
                 ),
             ]
-            for item in fms.get_items(fill_preorder_period=True)
+            for item in items
             for variant in item.variants
         ]
     )
