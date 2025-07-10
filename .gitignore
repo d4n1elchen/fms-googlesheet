@@ -1,4 +1,6 @@
 venv/
 .vscode/
+.DS_Store
 credentials.json
 token.json
+service_account.json

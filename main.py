@@ -11,25 +11,17 @@ parser.add_argument(
     "--sheet_id", type=str, help="The id of the Google Sheet to update."
 )
 parser.add_argument(
-    "--credentials",
+    "--service_account",
     type=str,
-    help="Path to the Google API credentials file.",
-    default="credentials.json",
-)
-parser.add_argument(
-    "--token",
-    type=str,
-    help="Path to save/read the Google API token file.",
-    default="token.json",
+    help="Path to the Google API service_account file.",
+    default="service_account.json",
 )
 
 
 def main():
     args = parser.parse_args()
 
-    gc = gspread.oauth(
-        credentials_filename=args.credentials, authorized_user_filename=args.token
-    )
+    gc = gspread.service_account(filename=args.service_account)
 
     fms = FindMeStoreItemList()
     items = fms.get_items(fill_preorder_period=True)
